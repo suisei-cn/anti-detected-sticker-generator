@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anti detected</title>
+    <style>
+      #app {
+        text-align: center;
+      }
+      #result {
+        margin: 2vw auto;
+        padding: 5px 0;
+        width: 512px;
+        background-color: transparent;
+        font-family: sans-serif;
+      }
+      #anti {
+        padding: 0 7px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>anti-detected generator</h1>
+      <p>
+        Generate anti-detected stickers. <br />
+        Here we fix the image width to 512px for use in Telegram.
+      </p>
+      <div id="panel">
+        <p>
+          <label for="itext">Text:</label>
+          <input id="itext" type="text" value="suisei-anti-detected" />
+        </p>
+        <p>
+          <label for="icolor">Color:</label>
+          <input id="icolor" type="text" size="12" value="#f4c186" />
+        </p>
+      </div>
+      <h2>Preview</h2>
+      <div id="result">
+        <span id="anti">suisei-anti-detected</span>
+      </div>
+      <button id="btnUpdate">Force update</button>
+      <p>
+        Built with <a href="https://twitter.com/akaihaato">Haato</a> by
+        <a href="https://github.com/suisei-cn">suisei-cn</a>
+      </p>
+      <h2>Images (right click to save)</h2>
+      <div id="images"></div>
+    </div>
+    <script>
+      const sAnti = document.getElementById("anti");
+      const iText = document.getElementById("itext");
+      const iColor = document.getElementById("icolor");
+      const divGallery = document.getElementById("images");
+      function update() {
+        sAnti.innerText = iText.value;
+        sAnti.style.backgroundColor = iColor.value;
+        sAnti.style.fontSize = "1rem";
+        const factor = (512 - 50) / (sAnti.offsetWidth - 14);
+        sAnti.style.fontSize = `${factor}rem`;
+        html2canvas(document.getElementById("result"), {
+          backgroundColor: null,
+        }).then(function (canvas) {
+          const img = document.createElement("img");
+          img.src = canvas.toDataURL();
+          divGallery.insertBefore(img, divGallery.firstChild);
+        });
+      }
+      document.getElementById("btnUpdate").addEventListener("click", update);
+      iText.addEventListener("change", update);
+      iColor.addEventListener("change", update);
+      document.addEventListener("DOMContentLoaded", update);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+  </body>
+</html>
