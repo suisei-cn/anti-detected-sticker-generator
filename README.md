@@ -2,7 +2,7 @@
 
 ## 关于 anti-detected 系列贴纸
 
-这张贴纸的~~清楚~~清晰版本是这样的：
+这是 suisei-cn 原创段子。贴纸的~~清楚~~清晰版本是这样的：
 
 ![](sticker.png)
 
@@ -11,6 +11,8 @@
 ## NoriPro 转播组里可能有我们的友军
 
 ![](meme.png)
+
+注：这些贴纸都在由 [@OriginCode](https://github.com/OriginCode) 维护的这个贴纸包里： https://t.me/addstickers/hoshimati_suisei
 
 ## 现成的轮子
 
