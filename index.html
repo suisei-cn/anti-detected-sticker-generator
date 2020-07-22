@@ -19,6 +19,30 @@
         padding: 0 7px;
         border-radius: 7px;
       }
+      #canv {
+        display: none;
+      }
+      #panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 5px;
+        row-gap: 5px;
+        grid-template-rows: 1fr 1fr;
+      }
+      @media screen and (min-width: 900px) {
+        #panel {
+          margin: 0 10vw;
+        }
+      }
+      @media screen and (min-width: 1500px) {
+        #panel {
+          margin: 0 20vw;
+        }
+      }
+      #panel > div {
+        grid-row: span 1;
+        grid-column: span 1;
+      }
       a {
         text-decoration: none;
       }
@@ -29,24 +53,31 @@
       <h1>anti-detected generator</h1>
       <p>
         Generate anti-detected stickers. <br />
-        Here we fix the image width to 512px for use in Telegram. <br />
-        Use Chromium browser if you experience bugs with Firefox.
+        Here we fix the image width to 512px for use in Telegram.
       </p>
       <div id="panel">
-        <p>
+        <div>
           <label for="itext">Text:</label>
           <input id="itext" type="text" value="suisei-anti-detected" />
-        </p>
-        <p>
-          <label for="icolor">Color:</label>
-          <input id="icolor" type="text" size="12" value="#f4c186" />
-        </p>
+        </div>
+        <div>
+          <label for="icolor">Text Color:</label>
+          <input id="icolor" type="text" size="10" value="black" />
+        </div>
+        <div>
+          <label for="bgcolor">Background color:</label>
+          <input id="bgcolor" type="text" size="10" value="#f4c186" />
+        </div>
+        <div>
+          <label for="iRadius">Radius:</label>
+          <input id="iRadius" type="text" size="6" value="5" />
+        </div>
       </div>
-      <h2>Preview</h2>
       <div id="result">
         <span id="anti">suisei-anti-detected</span>
       </div>
       <button id="btnUpdate">Force update</button>
+      <button id="clean">Clean</button>
       <p>
         Made with <a href="https://twitter.com/akaihaato">❤️ </a> by
         <a href="https://github.com/suisei-cn">suisei-cn</a>,
@@ -54,33 +85,112 @@
           >source</a
         >
       </p>
-      <h2>Images (right click to save)</h2>
+      <canvas id="canv" height="512" width="512"></canvas>
+      <h2>Images (click to save)</h2>
       <div id="images"></div>
     </div>
     <script>
       const sAnti = document.getElementById("anti");
       const iText = document.getElementById("itext");
       const iColor = document.getElementById("icolor");
+      const bgColor = document.getElementById("bgcolor");
+      const iRadius = document.getElementById("iRadius");
       const divGallery = document.getElementById("images");
+      const canvas = document.getElementById("canv");
+      const fontMax = 4;
+
+      function canvasDraw(content, block, canv) {
+        content = Object.assign(
+          {
+            text: "",
+            color: "black",
+            bgColor: "#f4c186",
+            fontSize: "4rem",
+          },
+          content
+        );
+        block = Object.assign(
+          {
+            height: 88,
+            width: 225,
+            radius: 5,
+            paddingV: 15,
+          },
+          block
+        );
+
+        canvas.height = block.height + 2 * block.paddingV;
+        const ctx = canv.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const left = (512 - block.width) / 2;
+        const right = 512 - left;
+        const top = block.paddingV;
+        const bottom = block.height + block.paddingV;
+        const radius =
+          block.radius * 2 > block.height ? block.height / 2 : block.radius;
+        const color = content.bgColor;
+        const fontSize = content.fontSize;
+        const text = content.text;
+
+        ctx.beginPath();
+        ctx.moveTo(left, top + radius);
+        ctx.lineTo(left, bottom - radius);
+        ctx.quadraticCurveTo(left, bottom, left + radius, bottom);
+        ctx.lineTo(right - radius, bottom);
+        ctx.quadraticCurveTo(right, bottom, right, bottom - radius);
+        ctx.lineTo(right, top + radius);
+        ctx.quadraticCurveTo(right, top, right - radius, top);
+        ctx.lineTo(left + radius, top);
+        ctx.quadraticCurveTo(left, top, left, top + radius);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.fillStyle = "black";
+        ctx.font = `${fontSize} sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(text, canvas.width / 2, bottom - (bottom - top) * 0.2);
+      }
       function update() {
         sAnti.innerText = iText.value;
-        sAnti.style.backgroundColor = iColor.value;
+        sAnti.style.color = iColor.value || "black";
+        sAnti.style.backgroundColor = bgColor.value;
         sAnti.style.fontSize = "1rem";
+        sAnti.style.borderRadius = iRadius.value + "px";
         const factor = (512 - 50) / (sAnti.offsetWidth - 14);
-        sAnti.style.fontSize = `${factor}rem`;
-        html2canvas(document.getElementById("result"), {
-          backgroundColor: null,
-        }).then(function (canvas) {
-          const img = document.createElement("img");
-          img.src = canvas.toDataURL();
-          divGallery.insertBefore(img, divGallery.firstChild);
+        sAnti.style.fontSize = `${Math.min(factor, fontMax)}rem`;
+        canvasDraw(
+          {
+            text: sAnti.innerText,
+            color: sAnti.style.color,
+            bgColor: sAnti.style.backgroundColor,
+            fontSize: sAnti.style.fontSize,
+          },
+          {
+            height: sAnti.offsetHeight,
+            width: sAnti.offsetWidth,
+            radius: Number(iRadius.value),
+          },
+          canvas
+        );
+
+        const img = document.createElement("img");
+        img.src = canvas.toDataURL();
+        img.addEventListener("click", () => {
+          var link = document.createElement("a");
+          link.setAttribute("href", img.src);
+          link.setAttribute("download", "output.png");
+          link.click();
         });
+        divGallery.insertBefore(img, divGallery.firstChild);
       }
       document.getElementById("btnUpdate").addEventListener("click", update);
-      iText.addEventListener("change", update);
-      iColor.addEventListener("change", update);
+      document.getElementById("clean").addEventListener("click", () => {
+        divGallery.innerHTML = "";
+      });
+      for (const i of [iText, iColor, bgColor, iRadius, divGallery]) {
+        i.addEventListener("change", update);
+      }
       document.addEventListener("DOMContentLoaded", update);
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
   </body>
 </html>
