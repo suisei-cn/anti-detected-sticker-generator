@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" / >
     <title>Anti detected</title>
     <style>
       #app {
@@ -145,7 +145,7 @@
         ctx.closePath();
         ctx.fillStyle = color;
         ctx.fill();
-        ctx.fillStyle = "black";
+        ctx.fillStyle = content.color;
         ctx.font = `${fontSize} sans-serif`;
         ctx.textAlign = "center";
         ctx.fillText(text, canvas.width / 2, bottom - (bottom - top) * 0.2);
