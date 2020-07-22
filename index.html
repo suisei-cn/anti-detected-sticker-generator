@@ -128,9 +128,6 @@
         const bottom = block.height + block.paddingV;
         const radius =
           block.radius * 2 > block.height ? block.height / 2 : block.radius;
-        const color = content.bgColor;
-        const fontSize = content.fontSize;
-        const text = content.text;
 
         ctx.beginPath();
         ctx.moveTo(left, top + radius);
@@ -143,12 +140,16 @@
         ctx.lineTo(left + radius, top);
         ctx.quadraticCurveTo(left, top, left, top + radius);
         ctx.closePath();
-        ctx.fillStyle = color;
+        ctx.fillStyle = content.bgColor;
         ctx.fill();
         ctx.fillStyle = content.color;
-        ctx.font = `${fontSize} sans-serif`;
+        ctx.font = `${content.fontSize} sans-serif`;
         ctx.textAlign = "center";
-        ctx.fillText(text, canvas.width / 2, bottom - (bottom - top) * 0.2);
+        ctx.fillText(
+          content.text,
+          canvas.width / 2,
+          bottom - (bottom - top) * 0.2
+        );
       }
       function update() {
         sAnti.innerText = iText.value;
