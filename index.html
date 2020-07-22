@@ -29,6 +29,9 @@
         row-gap: 5px;
         grid-template-rows: 1fr 1fr;
       }
+      #btnAutoGenOn {
+        display: none;
+      }
       @media screen and (min-width: 900px) {
         #panel {
           margin: 0 10vw;
@@ -77,6 +80,8 @@
         <span id="anti">suisei-anti-detected</span>
       </div>
       <button id="btnUpdate">Force update</button>
+      <button id="btnAutoGenOff">Disable auto generate</button>
+      <button id="btnAutoGenOn">Enable auto generate</button>
       <button id="clean">Clean</button>
       <p>
         Made with <a href="https://twitter.com/akaihaato">❤️ </a> by
@@ -151,7 +156,7 @@
           bottom - (bottom - top) * 0.2
         );
       }
-      function update() {
+      function update(drawCanvas = true) {
         sAnti.innerText = iText.value;
         sAnti.style.color = iColor.value || "black";
         sAnti.style.backgroundColor = bgColor.value;
@@ -159,6 +164,7 @@
         sAnti.style.borderRadius = iRadius.value + "px";
         const factor = (512 - 50) / (sAnti.offsetWidth - 14);
         sAnti.style.fontSize = `${Math.min(factor, fontMax)}rem`;
+        if (!drawCanvas) return;
         canvasDraw(
           {
             text: sAnti.innerText,
@@ -184,12 +190,25 @@
         });
         divGallery.insertBefore(img, divGallery.firstChild);
       }
+      let autoGen = true;
+      document.getElementById("btnAutoGenOff").addEventListener("click", () => {
+        autoGen = false;
+        document.getElementById("btnAutoGenOn").style.display = "inline";
+        document.getElementById("btnAutoGenOff").style.display = "none";
+      });
+      document.getElementById("btnAutoGenOn").addEventListener("click", () => {
+        autoGen = true;
+        document.getElementById("btnAutoGenOff").style.display = "inline";
+        document.getElementById("btnAutoGenOn").style.display = "none";
+      });
       document.getElementById("btnUpdate").addEventListener("click", update);
       document.getElementById("clean").addEventListener("click", () => {
         divGallery.innerHTML = "";
       });
       for (const i of [iText, iColor, bgColor, iRadius, divGallery]) {
-        i.addEventListener("change", update);
+        i.addEventListener("change", () => {
+          update(autoGen);
+        });
       }
       document.addEventListener("DOMContentLoaded", update);
     </script>
