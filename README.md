@@ -20,7 +20,7 @@ Carl [做了一组贴纸包](https://t.me/Hoshimachi_Suisei/144097)在这里： 
 
 ## 自行生成
 
-打开[这个页面](https://suisei-cn.github.io/anti-detected-sticker-generator/)（建议使用 Chrome/Chromium，Firefox 可能有一些问题），输入文本及颜色，生成图片，右键保存即可。
+打开[这个页面](https://suisei-cn.github.io/anti-detected-sticker-generator/)，输入文本及颜色，生成图片，右键保存即可。
 
 ## 协议
 
